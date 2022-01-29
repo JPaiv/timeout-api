@@ -32,7 +32,7 @@ custom:
   prefix: ${self:provider.stage}-${self:service}
   timeoutTransactions: ${self:custom.prefix}-timeout-transactions
   latencyTable: ${self:custom.prefix}-transaction-latencies-table
-  latencyBucket: ${self:custom.prefix}-transaction-latencies
+  latencyBucket: ${self:custom.prefix}-transactions-latencies-juho-test
 
 functions:
   create-latency-table:
