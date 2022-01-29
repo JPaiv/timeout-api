@@ -20,7 +20,7 @@ provider:
   - Effect: Allow
     Action:
       - S3: GetItem
-    Resource: Resource: arn:aws:dynamodb:*:*:table/${custom.latencyBucket}
+    Resource: arn:aws:dynamodb:*:*:table/${custom.latencyBucket}
   - Effect: Allow
     Action:
       - S3: GetItem
