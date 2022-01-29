@@ -38,7 +38,7 @@ functions:
     handler: create-latency-table.handler
     events:
      - s3: 
-        bucket: ${env:BUCKET}
+        bucket: ${custom.latencyBucket}
     environment:
       latencyTable: ${custom.latencyTable}
       latencyBucket: ${custom.latencyBucket}
