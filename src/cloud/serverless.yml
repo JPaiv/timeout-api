@@ -94,7 +94,7 @@ resources:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
 
-    LatencyBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        BucketName: ${self:custom.latencyBucket}
+    # LatencyBucket:
+    #   Type: AWS::S3::Bucket
+    #   Properties:
+    #     BucketName: ${self:custom.latencyBucket}
