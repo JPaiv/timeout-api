@@ -88,10 +88,10 @@ resources:
       Properties:
         TableName: ${self:custom.latencyTable}
         AttributeDefinitions:
-          - AttributeName: key
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          - AttributeName: key
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 5
