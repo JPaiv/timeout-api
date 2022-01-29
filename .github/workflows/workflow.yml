@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  Serverless-deploy:
+  Serverless-transactions-api-deploy:
     runs-on: ubuntu-latest
     defaults:
       run:        
@@ -33,7 +33,7 @@ jobs:
         run: serverless deploy
 
 jobs:
-  Serverless-deploy:
+  Serverless-verification-api-deploy:
     runs-on: ubuntu-latest
     defaults:
       run:        
