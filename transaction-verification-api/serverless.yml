@@ -26,10 +26,6 @@ provider:
       - S3: GetItem
     Resource: arn:aws:dynamodb:*:*:table/${custom.latencyBucket}/*
 
-  environment:
-    latencyTable: ${custom.latencyTable}
-    latencyBucket: ${custom.latencyBucket}
-
 custom:
   region: ${self:provider.region}
   prefix: ${self:provider.stage}-${self:service}
@@ -43,6 +39,9 @@ functions:
     events:
      - s3: 
         bucket: ${env:BUCKET}
+    environment:
+      latencyTable: ${custom.latencyTable}
+      latencyBucket: ${custom.latencyBucket}
 
 # you can add CloudFormation resource templates here
 #resources:
