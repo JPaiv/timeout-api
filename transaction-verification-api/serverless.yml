@@ -1,4 +1,4 @@
-service: timeout-api
+service: latency-api
 
 provider:
   name: aws
