@@ -40,7 +40,9 @@ custom:
 functions:
   create-latency-table:
     handler: create-latency-table.handler
-     - s3: ${env:BUCKET}
+    events:
+     - s3: 
+        bucket: ${env:BUCKET}
 
 # you can add CloudFormation resource templates here
 #resources:
