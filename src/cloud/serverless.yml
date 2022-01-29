@@ -21,7 +21,7 @@ provider:
     Action:
       - s3:GetItem
       - s3:PutItem
-    Resource: arn:aws:s3:::${self:custom.latency_bucket}
+    Resource: arn:aws:s3:::${self:custom.latencyBucket}
   - Effect: Allow
     Action:
       - lambda:InvokeFunction
@@ -36,7 +36,7 @@ custom:
   region: ${self:provider.region}
   prefix: ${self:provider.stage}-${self:service}
   timeoutTransactions: ${self:custom.prefix}-timeout-transactions
-  latency_bucket: ${self:custom.prefix}-transaction-latencies
+  latencyBucket: ${self:custom.prefix}-transaction-latencies
   latencyTable: ${self:custom.prefix}-transaction-latencies-table
 
 functions:
@@ -56,6 +56,9 @@ functions:
 
   # createLatencyTable:
   #   handler: cloud/world
+  environment:
+    latencyTable: ${self:custom.latencyTable}
+    latencyBucket: ${self:custom.latencyBucket}
 
 resources:
   Resources:
@@ -78,16 +81,23 @@ resources:
         QueueName: ${self:custom.timeoutTransactions}-dead-letter-queue
         MessageRetentionPeriod: 1209600
 
-    # Verification:
-    #   Type: AWS::DynamoDB::Table
-    #   Properties:
-    #     TableName: ${self:custom.verify}
-    #     AttributeDefinitions:
-    #       - AttributeName: key
-    #         AttributeType: S
-    #     KeySchema:
-    #       - AttributeName: key
-    #         KeyType: HASH
-    #     ProvisionedThroughput:
-    #       ReadCapacityUnits: 5
-    #       WriteCapacityUnits: 5
+    Verification:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.latencyTable}
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
+    LatencyBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.latencyBucket}
+
+
