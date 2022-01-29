@@ -21,29 +21,24 @@ provider:
   # - Effect: Allow
   #   Action:
   #     - S3: GetItem
-  #   Resource: arn:aws:s3:::bucket/${custom.latencyBucket}
+  #   Resource: arn:aws:s3:::bucket/${custom.timeoutBucket}
   # - Effect: Allow
   #   Action:
   #     - S3: GetItem
-  #   Resource: arn:aws:s3:::bucket/${custom.latencyBucket}/*
+  #   Resource: arn:aws:s3:::bucket/${custom.timeoutBucket}/*
 
 custom:
   region: ${self:provider.region}
   prefix: ${self:provider.stage}-${self:service}
-  timeoutTransactions: ${self:custom.prefix}-timeout-transactions
   latencyTable: ${self:custom.prefix}-transaction-latencies-table
-  latencyBucket: ${self:custom.prefix}-transactions-latencies
 
 functions:
   create-latency-table:
     handler: create-latency-table.handler
     events:
-     - s3: 
-        transactions:
-          name: ${custom.latencyBucket}
+     - s3: transactions
     environment:
       latencyTable: ${custom.latencyTable}
-      latencyBucket: ${custom.latencyBucket}
 
 resources:
  Resources:
@@ -60,8 +55,3 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
-
-    # Transactions:
-    #   Type: AWS::S3::Bucket
-    #   Properties:
-    #     BucketName: ${custom.latencyBucket}
