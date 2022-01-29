@@ -26,11 +26,11 @@ jobs:
       - name: Install serverless plugin 
         run: serverless plugin install --name serverless-sqs-alarms-plugin
 
-      - name: Build Go functions using makefile
+      - name: Build and deploy Go functions using makefile
         run: make build
 
-      - name: Serverless deploy all functions
-        run: serverless deploy
+      # - name: Serverless deploy all functions
+      #   run: serverless deploy
 
       # - name: Serverless remove all functions
       #   run: serverless remove
