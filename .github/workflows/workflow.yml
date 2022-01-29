@@ -21,9 +21,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-west-1
 
-      - name: Install npm dependencies
-        run: npm install
-
       - name: Install serverless framework
         run: npm install -g serverless
 
