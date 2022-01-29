@@ -1,7 +1,5 @@
 service: timeout-api
 
-frameworkVersion: '2'
-
 plugins:
   - serverless-sqs-alarms-plugin
 
