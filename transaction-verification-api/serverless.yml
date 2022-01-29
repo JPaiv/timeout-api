@@ -42,16 +42,20 @@ functions:
     #     bucket: ${custom.latencyBucket}
     environment:
       latencyTable: ${custom.latencyTable}
-      latencyBucket: ${custom.latencyBucket}
+      # latencyBucket: ${custom.latencyBucket}
 
-# you can add CloudFormation resource templates here
-#resources:
-#  Resources:
-#    NewResource:
-#      Type: AWS::S3::Bucket
-#      Properties:
-#        BucketName: my-new-bucket
-#  Outputs:
-#     NewOutput:
-#       Description: "Description for the output"
-#       Value: "Some output value"
+resources:
+ Resources:
+    Verification:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.latencyTable}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
