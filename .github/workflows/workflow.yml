@@ -4,13 +4,12 @@ on:
   push:
     branches: [ main ]
 
-
 jobs:
   build:
     runs-on: ubuntu-latest
     defaults:
       run:        
-        working-directory: ./src
+        working-directory: ./src/cloud
     steps:
       - uses: actions/checkout@v2
 
