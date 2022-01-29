@@ -16,11 +16,6 @@ provider:
     Resource: arn:aws:dynamodb:*:*:table/${self:custom.latencyTable}
   - Effect: Allow
     Action:
-      - s3:GetItem
-      - s3:PutItem
-    Resource: arn:aws:s3:::${self:custom.latencyBucket}/*
-  - Effect: Allow
-    Action:
       - lambda:InvokeFunction
     Resource: arn:aws:lambda:*:*:function:*
   - Effect: Allow
@@ -38,40 +33,18 @@ custom:
   region: ${self:provider.region}
   prefix: ${self:provider.stage}-${self:service}
   timeoutTransactions: ${self:custom.prefix}-timeout-transactions
-  latencyBucket: ${self:custom.prefix}-transaction-latencies
   latencyTable: ${self:custom.prefix}-transaction-latencies-table
 
 functions:
-  # get-verifications:
-  #   handler: bin/world
-  #   description: Verify transactions from API and DynamoDb object query.
-  #   events:
-  #     - httpApi:
-  #         path: /verify
-  #         method: get
-  #   environment:
-  #     latencyTable: ${self:custom.latencyTable}
-  #     latencyBucket: ${self:custom.latencyBucket}
-
-  create-latency-table-objects:
-    handler: bin/latency-data
-    description: Fill DynamoDb latencies table with latency country API latency data objects.
-    events:
-      - s3: ${self:custom.latencyBucket}
-    environment:
-      latencyTable: ${self:custom.latencyTable}
-      latencyBucket: ${self:custom.latencyBucket}
-
-  verification-api:
-    handler: bin/verification-api
+  transaction-api:
+    handler: bin/transaction-api
     description: Verify transactions from API and DynamoDb object query.
     events:
       - httpApi:
-          path: /verify
+          path: /verifyTransaction
           method: get
     environment:
       latencyTable: ${self:custom.latencyTable}
-      latencyBucket: ${self:custom.latencyBucket}
 
 resources:
   Resources:
@@ -94,21 +67,16 @@ resources:
         QueueName: ${self:custom.timeoutTransactions}-dead-letter-queue
         MessageRetentionPeriod: 1209600
 
-    Verification:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.latencyTable}
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
-
-    # LatencyBucket:
-    #   Type: AWS::S3::Bucket
+    # Verification:
+    #   Type: AWS::DynamoDB::Table
     #   Properties:
-    #     BucketName: ${self:custom.latencyBucket}
+    #     TableName: ${self:custom.latencyTable}
+    #     AttributeDefinitions:
+    #       - AttributeName: id
+    #         AttributeType: S
+    #     KeySchema:
+    #       - AttributeName: id
+    #         KeyType: HASH
+    #     ProvisionedThroughput:
+    #       ReadCapacityUnits: 5
+    #       WriteCapacityUnits: 5

@@ -1,0 +1,55 @@
+service: transaction-verification-api
+
+provider:
+  name: aws
+  runtime: python3.8
+  lambdaHashingVersion: 20201221
+
+  stage: dev
+  region: eu-west-1
+
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+    Resource: arn:aws:dynamodb:*:*:table/${self:custom.latencyTable}
+  - Effect: Allow
+    Action:
+      - lambda:InvokeFunction
+  - Effect: Allow
+    Action:
+      - S3: GetItem
+    Resource: Resource: arn:aws:dynamodb:*:*:table/${custom.latencyBucket}
+  - Effect: Allow
+    Action:
+      - S3: GetItem
+    Resource: Resource: arn:aws:dynamodb:*:*:table/${custom.latencyBucket}/*
+
+  environment:
+    latencyTable: ${custom.latencyTable}
+    latencyBucket: ${custom.latencyBucket}
+
+custom:
+  region: ${self:provider.region}
+  prefix: ${self:provider.stage}-${self:service}
+  timeoutTransactions: ${self:custom.prefix}-timeout-transactions
+  latencyTable: ${self:custom.prefix}-transaction-latencies-table
+  latencyBucket: ${self:custom.prefix}-transaction-latencies-bucket
+
+functions:
+  create-latency-table:
+    handler: create-latency-table.handler
+     - s3: ${env:BUCKET}
+
+# you can add CloudFormation resource templates here
+#resources:
+#  Resources:
+#    NewResource:
+#      Type: AWS::S3::Bucket
+#      Properties:
+#        BucketName: my-new-bucket
+#  Outputs:
+#     NewOutput:
+#       Description: "Description for the output"
+#       Value: "Some output value"

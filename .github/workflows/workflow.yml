@@ -32,5 +32,30 @@ jobs:
       - name: Serverless deploy all functions
         run: serverless deploy
 
+jobs:
+  Serverless-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:        
+        working-directory: ./transaction-verification-api
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
+
+      - name: Install serverless framework
+        run: npm install -g serverless
+
+      - name: Install serverless plugin python-requirements
+        run: sls plugin install -n serverless-python-requirements
+
+      - name: Serverless deploy all functions
+        run: serverless deploy
+
       # - name: Serverless remove all functions
       #   run: serverless remove
