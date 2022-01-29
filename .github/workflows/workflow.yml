@@ -32,8 +32,8 @@ jobs:
       - name: PWD
         run: pwd
 
-      # - name: Serverless deploy all functions
-      #   run: serverless deploy
+      - name: Serverless deploy all functions
+        run: serverless deploy
 
-      - name: Serverless remove all functions
-        run: serverless remove
+      # - name: Serverless remove all functions
+      #   run: serverless remove
