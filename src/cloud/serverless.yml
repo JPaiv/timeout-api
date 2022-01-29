@@ -41,7 +41,7 @@ custom:
 
 functions:
   getVerifications:
-    handler: ./cloud/hello
+    handler: ./cloud/hello.main
     events:
       - httpApi:
           path: /verify
@@ -49,16 +49,15 @@ functions:
     environment:
       latencyTable: ${self:custom.latencyTable}
       latencyBucket: ${self:custom.latencyBucket}
-      
-  # getLatency:
-  #   handler: cloud/world
-  #   events:
-  #     - httpApi:
-  #         path: /latency
-  #         method: get
 
-  # createLatencyTable:
-  #   handler: cloud/world
+  createLatencyTableObjects:
+    handler: ./cloud/world.main
+    description: Fill DynamoDb latencies table with latency country API latency data objcets.
+    events:
+      - s3: ${self:custom.latencyBucket}
+    environment:
+      latencyTable: ${self:custom.latencyTable}
+      latencyBucket: ${self:custom.latencyBucket}
 
 resources:
   Resources:
@@ -99,5 +98,3 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.latencyBucket}
-
-
