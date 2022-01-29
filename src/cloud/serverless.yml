@@ -17,11 +17,11 @@ provider:
       - dynamodb:GetItem
       - dynamodb:PutItem
     Resource: arn:aws:dynamodb:*:*:table/${self:custom.latencyTable}
-  # - Effect: Allow
-  #   Action:
-  #     - s3:GetItem
-  #     - s3:PutItem
-  #   Resource: arn:aws:s3:::${self:custom.latencyBucket}
+  - Effect: Allow
+    Action:
+      - s3:GetItem
+      - s3:PutItem
+    Resource: arn:aws:s3:::${self:custom.latencyBucket}
   - Effect: Allow
     Action:
       - lambda:InvokeFunction
