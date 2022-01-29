@@ -32,7 +32,6 @@ jobs:
       - name: Serverless deploy all functions
         run: serverless deploy
 
-jobs:
   Serverless-verification-api-deploy:
     runs-on: ubuntu-latest
     defaults:
