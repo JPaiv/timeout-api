@@ -1,8 +1,5 @@
 service: timeout-api
 
-plugins:
-  - serverless-sqs-alarms-plugin
-
 provider:
   name: aws
   runtime: go1.x
@@ -32,6 +29,11 @@ provider:
       - sqs:ReceiveMessage
     Resource: arn:aws:sqs:*:*:${self:custom.timeoutTransactions}
 
+package:
+  patterns:
+    - '!./**'
+    - ./bin/**
+
 custom:
   region: ${self:provider.region}
   prefix: ${self:provider.stage}-${self:service}
@@ -40,22 +42,33 @@ custom:
   latencyTable: ${self:custom.prefix}-transaction-latencies-table
 
 functions:
-  get-verifications:
-    handler: bin/hello
+  # get-verifications:
+  #   handler: bin/world
+  #   description: Verify transactions from API and DynamoDb object query.
+  #   events:
+  #     - httpApi:
+  #         path: /verify
+  #         method: get
+  #   environment:
+  #     latencyTable: ${self:custom.latencyTable}
+  #     latencyBucket: ${self:custom.latencyBucket}
+
+  create-latency-table-objects:
+    handler: bin/latency-api
+    description: Fill DynamoDb latencies table with latency country API latency data objects.
+    events:
+      - s3: ${self:custom.latencyBucket}
+    environment:
+      latencyTable: ${self:custom.latencyTable}
+      latencyBucket: ${self:custom.latencyBucket}
+
+  verification-api:
+    handler: bin/verification-api
     description: Verify transactions from API and DynamoDb object query.
     events:
       - httpApi:
           path: /verify
           method: get
-    environment:
-      latencyTable: ${self:custom.latencyTable}
-      latencyBucket: ${self:custom.latencyBucket}
-
-  create-latency-table-objects:
-    handler: bin/world
-    description: Fill DynamoDb latencies table with latency country API latency data objects.
-    events:
-      - s3: ${self:custom.latencyBucket}
     environment:
       latencyTable: ${self:custom.latencyTable}
       latencyBucket: ${self:custom.latencyBucket}
@@ -86,10 +99,10 @@ resources:
       Properties:
         TableName: ${self:custom.latencyTable}
         AttributeDefinitions:
-          - AttributeName: key
+          - AttributeName: id
             AttributeType: S
         KeySchema:
-          - AttributeName: key
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 5
