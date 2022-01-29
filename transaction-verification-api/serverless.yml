@@ -32,14 +32,14 @@ custom:
   prefix: ${self:provider.stage}-${self:service}
   timeoutTransactions: ${self:custom.prefix}-timeout-transactions
   latencyTable: ${self:custom.prefix}-transaction-latencies-table
-  latencyBucket: ${self:custom.prefix}-transactions-latencies
+  # latencyBucket: ${self:custom.prefix}-transactions-latencies
 
 functions:
   create-latency-table:
     handler: create-latency-table.handler
-    events:
-     - s3: 
-        bucket: ${custom.latencyBucket}
+    # events:
+    #  - s3: 
+    #     bucket: ${custom.latencyBucket}
     environment:
       latencyTable: ${custom.latencyTable}
       latencyBucket: ${custom.latencyBucket}
