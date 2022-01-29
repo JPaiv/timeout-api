@@ -18,7 +18,7 @@ provider:
     Action:
       - dynamodb:GetItem
       - dynamodb:PutItem
-    Resource: arn:aws:dynamodb:*:*:table/${self:custom.config}
+    Resource: arn:aws:dynamodb:*:*:table/${self:custom.latencyTable}
   - Effect: Allow
     Action:
       - s3:GetItem
@@ -27,7 +27,7 @@ provider:
   - Effect: Allow
     Action:
       - lambda:InvokeFunction
-    Resource: arn:aws:lambda:*:*:function:${self:custom.process}
+    Resource: arn:aws:lambda:*:*:function:*
   - Effect: Allow
     Action:
       - sqs:DeleteMessage
@@ -40,6 +40,7 @@ custom:
   prefix: ${self:custom.stage}-${self:service}
   sqs: ${self:custom.prefix}-transactions
   latency_bucket: ${self:custom.prefix}-transaction-latencies
+  latencyTable: ${self:custom.prefix}-transaction-latencies-table
 
 functions:
   getVerifications:
