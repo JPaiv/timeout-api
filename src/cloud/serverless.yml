@@ -21,7 +21,7 @@ provider:
     Action:
       - s3:GetItem
       - s3:PutItem
-    Resource: arn:aws:s3:*:*:${self:custom.latency_bucket}
+    Resource: arn:aws:s3:::${self:custom.latency_bucket}
   - Effect: Allow
     Action:
       - lambda:InvokeFunction
