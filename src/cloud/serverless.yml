@@ -41,7 +41,7 @@ custom:
 
 functions:
   get-verifications:
-    handler: ./cloud/hello.main
+    handler: /hello.main
     description: Verify transactions from API and DynamoDb object query.
     events:
       - httpApi:
@@ -52,7 +52,7 @@ functions:
       latencyBucket: ${self:custom.latencyBucket}
 
   create-latency-table-objects:
-    handler: ./cloud/world.main
+    handler: /world.main
     description: Fill DynamoDb latencies table with latency country API latency data objects.
     events:
       - s3: ${self:custom.latencyBucket}
