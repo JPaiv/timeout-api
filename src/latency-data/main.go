@@ -22,7 +22,7 @@ type Response events.APIGatewayProxyResponse
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(ctx context.Context, s3Event events.S3Event) {
 
-	bucket := "cellery-runtime-installation"
+	bucket := "dev-timeout-api-transaction-latencies"
 	item := "hello-world.txt"
 
 	file, err := os.Create(item)
