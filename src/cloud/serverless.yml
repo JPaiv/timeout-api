@@ -1,0 +1,95 @@
+service: timeout-api
+
+frameworkVersion: '2'
+
+plugins:
+  - serverless-sqs-alarms-plugin
+
+provider:
+  name: aws
+  runtime: go1.x
+  lambdaHashingVersion: 20201221
+
+  stage: dev
+  region: eu-west-1
+
+  iamRoleStatements:
+  - Effect: Allow
+    Action:
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+    Resource: arn:aws:dynamodb:*:*:table/${self:custom.config}
+  - Effect: Allow
+    Action:
+      - s3:GetItem
+      - s3:PutItem
+    Resource: arn:aws:s3:*:*:${self:custom.latency_bucket}
+  - Effect: Allow
+    Action:
+      - lambda:InvokeFunction
+    Resource: arn:aws:lambda:*:*:function:${self:custom.process}
+  - Effect: Allow
+    Action:
+      - sqs:DeleteMessage
+      - sqs:ReceiveMessage
+    Resource: arn:aws:sqs:*:*:${self:custom.sqs}
+
+custom:
+  region: ${self:provider.region}
+  stage: ${self:provider.stage, self:provider.stage}
+  prefix: ${self:custom.stage}-${self:service}
+  sqs: ${self:custom.prefix}-transactions
+  latency_bucket: ${self:custom.prefix}-transaction-latencies
+
+functions:
+  getVerifications:
+    handler: cloud/hello
+    events:
+      - httpApi:
+          path: /verify
+          method: get
+    
+  getLatency:
+    handler: cloud/world
+    events:
+      - httpApi:
+          path: /latency
+          method: get
+
+  createLatencyTable:
+    handler: cloud/world
+
+resources:
+  Resources:
+    Transactions:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.sqs}
+        MessageRetentionPeriod: 1209600
+        VisibilityTimeout: 60
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+            - MessagesDeadLetterQueue
+            - Arn
+          maxReceiveCount: 10
+
+    MessagesDeadLetterQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.sqs}-dead-letter-queue
+        MessageRetentionPeriod: 1209600
+
+    Verification:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.verify}
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
