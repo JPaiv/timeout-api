@@ -1,4 +1,4 @@
-service: transaction-verification-api
+service: timeout-api
 
 provider:
   name: aws
@@ -32,17 +32,18 @@ custom:
   prefix: ${self:provider.stage}-${self:service}
   timeoutTransactions: ${self:custom.prefix}-timeout-transactions
   latencyTable: ${self:custom.prefix}-transaction-latencies-table
-  # latencyBucket: ${self:custom.prefix}-transactions-latencies
+  latencyBucket: ${self:custom.prefix}-transactions-latencies
 
 functions:
   create-latency-table:
     handler: create-latency-table.handler
-    # events:
-    #  - s3: 
-    #     bucket: ${custom.latencyBucket}
+    events:
+     - s3: 
+        transactions:
+          name: ${custom.latencyBucket}
     environment:
       latencyTable: ${custom.latencyTable}
-      # latencyBucket: ${custom.latencyBucket}
+      latencyBucket: ${custom.latencyBucket}
 
 resources:
  Resources:
@@ -59,3 +60,8 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
+
+    # Transactions:
+    #   Type: AWS::S3::Bucket
+    #   Properties:
+    #     BucketName: ${custom.latencyBucket}
