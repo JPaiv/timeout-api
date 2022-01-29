@@ -21,28 +21,27 @@ type Response events.APIGatewayProxyResponse
 
 // Handler is our lambda handler invoked by the `lambda.Start` function call
 func Handler(ctx context.Context, s3Event events.S3Event) {
-	item := "api_latencies.json"
+
+	bucket := "cellery-runtime-installation"
+	item := "hello-world.txt"
+
 	file, err := os.Create(item)
 	if err != nil {
-		fmt.Println("Unable to open file %q, %v", item, err)
+		fmt.Println(err)
 	}
-
 	defer file.Close()
 
-	for _, record := range s3Event.Records {
-		s3 := record.S3
-		fmt.Printf("[%s - %s] Bucket = %s, Key = %s \n", record.EventSource, record.EventTime, s3.Bucket.Name, s3.Object.Key)
-	}
-	sess, _ := session.NewSession(&aws.Config{Region: aws.String("us-east-1")})
+	sess, _ := session.NewSession(&aws.Config{Region: aws.String("eu-west-1")})
 	downloader := s3manager.NewDownloader(sess)
-	numBytes, err := downloader.Download("api_latencies.json",
+	numBytes, err := downloader.Download(file,
 		&s3.GetObjectInput{
-			Bucket: aws.String(s3.Bucket.Name),
-			Key:    aws.String(s3.Object.Key),
+			Bucket: aws.String(bucket),
+			Key:    aws.String(item),
 		})
 	if err != nil {
 		fmt.Println(err)
 	}
+
 	fmt.Println("Downloaded", file.Name(), numBytes, "bytes")
 }
 
