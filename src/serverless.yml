@@ -54,7 +54,7 @@ functions:
   #     latencyBucket: ${self:custom.latencyBucket}
 
   create-latency-table-objects:
-    handler: bin/latency-api
+    handler: bin/latency-data
     description: Fill DynamoDb latencies table with latency country API latency data objects.
     events:
       - s3: ${self:custom.latencyBucket}
