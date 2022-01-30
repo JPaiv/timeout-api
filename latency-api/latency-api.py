@@ -36,7 +36,8 @@ def _query_dynamo_by_id(body: dict) -> dict:
         KeyConditionExpression=Key('id').eq(body["bank_country_code"])
     )
     logger.info(response)
-    item_retrieved_from_db = response["Items"][0]
+    item_retrieved_from_db = response["Items"]
+    item_retrieved_from_db = item_retrieved_from_db[0]
     item_retrieved_from_db = dict(map(lambda x: (x[0], int(x[1])) if isinstance(
         x[1], Decimal) else x, item_retrieved_from_db.items()))
     logging.info(item_retrieved_from_db)
