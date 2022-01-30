@@ -13,6 +13,7 @@ provider:
       Action:
         - dynamodb:GetItem
         - dynamodb:PutItem
+        - dynamodb:Query
       Resource: arn:aws:dynamodb:*:*:table/${self:custom.latencyTable}
     - Effect: Allow
       Action:
