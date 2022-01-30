@@ -10,6 +10,7 @@ logger.setLevel(logging.INFO)
 
 
 def handler(event: dict, context: dict) -> Response:
+    logger.info(json.dumps(event))
     body: dict = _get_body_from_event(event)
     logger.info(json.dumps(body))
 
