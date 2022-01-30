@@ -8,5 +8,5 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
 
 
-def handler(event: dict, context):
+def handler(event, context):
     logger.info(json.dumps(event))
