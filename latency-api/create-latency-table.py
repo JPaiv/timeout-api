@@ -10,3 +10,5 @@ logger = logging.getLogger()
 
 def handler(event, context):
     logger.info(json.dumps(event))
+
+    logger.info("Homma toimii.")
