@@ -29,11 +29,11 @@ jobs:
       - name: Build and deploy Go functions using makefile
         run: make build
 
-      # - name: Serverless deploy all functions
-      #   run: serverless deploy
+      - name: Serverless deploy all functions
+        run: serverless deploy
 
-      - name: Serverless remove all functions
-        run: serverless remove
+      # - name: Serverless remove all functions
+      #   run: serverless remove
 
   Serverless-verification-api-deploy:
     # needs: Serverless-transactions-api-deploy
@@ -57,8 +57,8 @@ jobs:
       - name: Install serverless plugin python-requirements
         run: sls plugin install -n serverless-python-requirements
 
-      # - name: Serverless deploy all functions
-      #   run: serverless deploy
+      - name: Serverless deploy all functions
+        run: serverless deploy
 
-      - name: Serverless remove all functions
-        run: serverless remove
+      # - name: Serverless remove all functions
+      #   run: serverless remove
