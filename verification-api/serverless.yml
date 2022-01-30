@@ -37,7 +37,7 @@ custom:
 
 functions:
   transaction-api:
-    handler: bin/transaction-api
+    handler: bin/verification-api
     description: Verify transactions from API and DynamoDb object query.
     events:
       - httpApi:
@@ -66,17 +66,3 @@ resources:
       Properties:
         QueueName: ${self:custom.timeoutTransactions}-dead-letter-queue
         MessageRetentionPeriod: 1209600
-
-    # Verification:
-    #   Type: AWS::DynamoDB::Table
-    #   Properties:
-    #     TableName: ${self:custom.latencyTable}
-    #     AttributeDefinitions:
-    #       - AttributeName: id
-    #         AttributeType: S
-    #     KeySchema:
-    #       - AttributeName: id
-    #         KeyType: HASH
-    #     ProvisionedThroughput:
-    #       ReadCapacityUnits: 5
-    #       WriteCapacityUnits: 5

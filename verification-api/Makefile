@@ -6,7 +6,6 @@ build:
 	go get -u github.com/aws/aws-sdk-go/aws/session
 	go get -u github.com/aws/aws-sdk-go/service/s3
 	go get -u github.com/aws/aws-sdk-go/service/s3/s3manager
-	env GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -o bin/latency-data latency-data/main.go
 	env GOARCH=amd64 GOOS=linux go build -ldflags="-s -w" -o bin/verification-api verification-api/main.go
 
 clean:

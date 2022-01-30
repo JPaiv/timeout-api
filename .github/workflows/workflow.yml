@@ -5,32 +5,32 @@ on:
     branches: [ main ]
 
 jobs:
-#   Serverless-transactions-api-deploy:
-#     runs-on: ubuntu-latest
-#     defaults:
-#       run:        
-#         working-directory: ./verification-api
-#     steps:
-#       - uses: actions/checkout@v2
+  Serverless-transactions-api-deploy:
+    runs-on: ubuntu-latest
+    defaults:
+      run:        
+        working-directory: ./verification-api
+    steps:
+      - uses: actions/checkout@v2
 
-#       - name: Configure AWS Credentials
-#         uses: aws-actions/configure-aws-credentials@v1
-#         with:
-#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#           aws-region: eu-west-1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-west-1
 
-#       - name: Install serverless framework
-#         run: npm install -g serverless
+      - name: Install serverless framework
+        run: npm install -g serverless
 
-#       - name: Install serverless plugin 
-#         run: serverless plugin install --name serverless-sqs-alarms-plugin
+      - name: Install serverless plugin 
+        run: serverless plugin install --name serverless-sqs-alarms-plugin
 
-#       - name: Build and deploy Go functions using makefile
-#         run: make build
+      - name: Build and deploy Go functions using makefile
+        run: make build
 
-#       - name: Serverless deploy all functions
-#         run: serverless deploy
+      - name: Serverless deploy all functions
+        run: serverless deploy
 
       # - name: Serverless remove all functions
       #   run: serverless remove
