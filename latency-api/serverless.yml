@@ -21,11 +21,11 @@ provider:
   - Effect: Allow
     Action:
       - S3: GetItem
-    Resource: arn:aws:s3:::bucket/${self:custom.timeoutBucket}
+    Resource: arn:aws:s3:::bucket/${self:custom.latencyBucket}
   - Effect: Allow
     Action:
       - S3: GetItem
-    Resource: arn:aws:s3:::bucket/${self:custom.timeoutBucket}/*
+    Resource: arn:aws:s3:::bucket/${self:custom.latencyBucket}/*
 
 custom:
   region: ${self:provider.region}
