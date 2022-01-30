@@ -24,9 +24,12 @@ def handler(event, context):
     # with open("latencies.json") as source_file:
     #     source_file = json.loads(source_file)
     for key, value in json_content.items():
+        logger.info(key)
+        logger.info(value)
         latency_data = {}
         latency_data["id"] = key
         latency_data["latency"] = value
+        logger.info(json.dumps(latency_data))
         _write_to_dynamo(latency_data)
 
 
