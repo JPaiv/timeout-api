@@ -15,7 +15,7 @@ def handler(event: dict, context: dict) -> Response:
     logger.info(json.dumps(event))
     body: dict = _get_body_from_event(event)
     logger.info(json.dumps(body))
-    response_data = _query_dynamo_by_id(body)
+    body, item = _query_dynamo_by_id(body)
     response = _create_response(body)
     return response
 
@@ -34,12 +34,13 @@ def _query_dynamo_by_id(body: dict) -> dict:
         KeyConditionExpression=Key('id').eq(body["bank_country_code"])
     )
     item = response["Items"][0]
-    if item["approved"] == True:
-        body["verified"] = True
+    logging.info(json.dumps(item))
+    # if item:
+    #     body["verified"] = True
 
-    else:
-        body["verified"] = False
-    return body
+    # else:
+    #     body["verified"] = False
+    return body, item
 
 
 def _create_response(body: dict) -> response:
