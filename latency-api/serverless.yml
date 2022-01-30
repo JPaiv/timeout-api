@@ -19,8 +19,8 @@ provider:
         - dynamodb:DeleteItem
         # - s3:GetItem
         # - s3:PutItem
-      Resource:
-        - { "Fn::GetAtt": [{self:custom.latencyTable}, "Arn"] }
+      Resource: arn:aws:dynamodb:*:*:table/${self:custom.latencyTable}
+        # - { "Fn::GetAtt": [{self:custom.latencyTable}, "Arn"] }
         # - arn:aws:s3:::bucket/${self:custom.latencyBucket}
         # - arn:aws:s3:::bucket/${self:custom.latencyBucket}/*
   # - Effect: Allow
@@ -36,6 +36,8 @@ provider:
       Action:
         - S3: GetItem
       Resource:
+        # - { "Fn::GetAtt": [${self:custom.latencyBucket}, "Arn"] }
+        # - { "Fn::GetAtt": [${self:custom.latencyBucket}/*, "Arn"] }
         - arn:aws:s3:::bucket/${self:custom.latencyBucket}
         - arn:aws:s3:::bucket/${self:custom.latencyBucket}/*
   # - Effect: Allow
