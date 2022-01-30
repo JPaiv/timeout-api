@@ -28,16 +28,16 @@ provider:
   #     - dynamodb:GetItem
   #     - dynamodb:PutItem
   #   Resource: arn:aws:dynamodb:*:*:table/${self:custom.latencyTable}
-  - Effect: Allow
-    Action:
-      - lambda:InvokeFunction
-    Resource: arn:aws:lambda:*:*:function:*
-  - Effect: Allow
-    Action:
-      - S3: GetItem
-    Resource:
-      - arn:aws:s3:::bucket/${self:custom.latencyBucket}
-      - arn:aws:s3:::bucket/${self:custom.latencyBucket}/*
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+      Resource: arn:aws:lambda:*:*:function:*
+    - Effect: Allow
+      Action:
+        - S3: GetItem
+      Resource:
+        - arn:aws:s3:::bucket/${self:custom.latencyBucket}
+        - arn:aws:s3:::bucket/${self:custom.latencyBucket}/*
   # - Effect: Allow
   #   Action:
   #     - S3: GetItem
