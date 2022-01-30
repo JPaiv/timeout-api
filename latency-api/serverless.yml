@@ -63,6 +63,7 @@ functions:
           method: get
     environment:
       latencyTable: ${self:custom.latencyTable}
+
 resources:
  Resources:
     Verification:
