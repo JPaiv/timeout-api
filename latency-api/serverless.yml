@@ -11,39 +11,23 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - dynamodb:Query
-        - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-        # - s3:GetItem
-        # - s3:PutItem
       Resource: arn:aws:dynamodb:*:*:table/${self:custom.latencyTable}
-        # - { "Fn::GetAtt": [{self:custom.latencyTable}, "Arn"] }
-        # - arn:aws:s3:::bucket/${self:custom.latencyBucket}
-        # - arn:aws:s3:::bucket/${self:custom.latencyBucket}/*
-  # - Effect: Allow
-  #   Action:
-  #     - dynamodb:GetItem
-  #     - dynamodb:PutItem
-  #   Resource: arn:aws:dynamodb:*:*:table/${self:custom.latencyTable}
-    # - Effect: Allow
-    #   Action:
-    #     - lambda:InvokeFunction
-      # Resource: arn:aws:lambda:*:*:function:*
     - Effect: Allow
       Action:
-        - S3: GetItem
-      Resource:
-        # - { "Fn::GetAtt": [${self:custom.latencyBucket}, "Arn"] }
-        # - { "Fn::GetAtt": [${self:custom.latencyBucket}/*, "Arn"] }
-        - arn:aws:s3:::bucket/${self:custom.latencyBucket}
-        - arn:aws:s3:::bucket/${self:custom.latencyBucket}/*
-  # - Effect: Allow
-  #   Action:
-  #     - S3: GetItem
-  #   Resource: arn:aws:s3:::bucket/${self:custom.latencyBucket}/*
+        - lambda:InvokeFunction
+      Resource: arn:aws:lambda:*:*:function:*
+    - Effect: Allow
+      Action:
+        - s3:GetItem
+        - s3:PutItem
+      Resource: arn:aws:s3:::bucket/${self:custom.latencyBucket}
+    - Effect: Allow
+      Action:
+        - s3:GetItem
+        - s3:PutItem
+      Resource: arn:aws:s3:::bucket/${self:custom.latencyBucket}/*
 
 custom:
   region: ${self:provider.region}
