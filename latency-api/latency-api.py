@@ -43,7 +43,7 @@ def _query_dynamo_by_id(body: dict) -> dict:
     logging.info(item_retrieved_from_db)
     if item_retrieved_from_db:
         body["verified"] = True
-        wait(item_retrieved_from_db["latency"])
+        # wait(item_retrieved_from_db["latency"])
     else:
         body["verified"] = False
     return body
