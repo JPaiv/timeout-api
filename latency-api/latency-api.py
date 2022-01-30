@@ -1,4 +1,5 @@
 import os
+from urllib import response
 import boto3
 import json
 import logging
@@ -13,6 +14,9 @@ def handler(event: dict, context: dict) -> Response:
     logger.info(json.dumps(event))
     body: dict = _get_body_from_event(event)
     logger.info(json.dumps(body))
+    response_data = _query_dynamo_by_id(body)
+    response = _create_response(body)
+    return response
 
 
 def _get_body_from_event(event: dict):
@@ -22,14 +26,29 @@ def _get_body_from_event(event: dict):
     return body
 
 
-def _create_response(body):
-    if "email_status" in body:
+def _query_dynamo_by_id(body: dict) -> dict:
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table(os.environ["latencyTable"])
+    response = table.query(
+        KeyConditionExpression=Key('id').eq(body["bank_country_code"])
+    )
+    item = response["Items"][0]
+    if item["approved"] == True:
+        body["verified"] = True
+
+    else:
+        body["verified"] = False
+    return body
+
+
+def _create_response(body: dict) -> response:
+    if body["approved"]:
         return {
-            "status": 400,
+            "status": 200,
             "content": json.dumps(body)
         }
     else:
         return {
-            "status": 200,
+            "status": 240,
             "content": json.dumps(body)
         }
