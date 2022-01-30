@@ -5,6 +5,7 @@ import boto3
 import json
 import logging
 import os
+import time
 from boto3.dynamodb.conditions import Key
 from decimal import Decimal
 from requests.models import Response
@@ -30,23 +31,40 @@ def _get_body_from_event(event: dict):
 
 
 def _query_dynamo_by_id(body: dict) -> dict:
+    """
+        Query DynamoDb table by id and parse the result.
+    """
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(os.environ["latencyTable"])
-    response = table.query(
+    query_response = table.query(
         KeyConditionExpression=Key('id').eq(body["bank_country_code"])
     )
     logger.info(response)
-    item_retrieved_from_db = response["Items"]
-    item_retrieved_from_db = item_retrieved_from_db[0]
-    item_retrieved_from_db = dict(map(lambda x: (x[0], int(x[1])) if isinstance(
-        x[1], Decimal) else x, item_retrieved_from_db.items()))
+    item_retrieved_from_db = _get_result_from_dynamo_query(query_response)
+    item_retrieved_from_db = _convert_decimal_to_int(item_retrieved_from_db)
     logging.info(item_retrieved_from_db)
     if item_retrieved_from_db:
         body["verified"] = True
-        # wait(item_retrieved_from_db["latency"])
+        time.sleep(item_retrieved_from_db["latency"])
     else:
         body["verified"] = False
     return body
+
+
+def _get_result_from_dynamo_query(response: dict) -> dict:
+    item_retrieved_from_db = response["Items"]
+    item_retrieved_from_db = item_retrieved_from_db[0]
+    return item_retrieved_from_db
+
+
+def _convert_decimal_to_int(item_retrieved_from_db: dict) -> dict:
+    """
+        Dynamo returns int as decimal: change it back to int.
+    """
+    item_retrieved_from_db = dict(map(lambda x: (x[0], int(x[1])) if isinstance(
+        x[1], Decimal) else x, item_retrieved_from_db.items()))
+
+    return item_retrieved_from_db
 
 
 def _create_response(body: dict) -> response:
