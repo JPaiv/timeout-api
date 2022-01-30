@@ -36,7 +36,7 @@ jobs:
       #   run: serverless remove
 
   Serverless-verification-api-deploy:
-    needs: Serverless-transactions-api-deploy
+    # needs: Serverless-transactions-api-deploy
     runs-on: ubuntu-latest
     defaults:
       run:        
