@@ -33,13 +33,14 @@ func handler(ctx context.Context, s3Event events.S3Event) {
 
 		sess, _ := session.NewSession(&aws.Config{Region: aws.String("eu-west-1")})
 		downloader := s3manager.NewDownloader(sess)
+		fmt.Print("Begin download.")
 		numBytes, err := downloader.Download(file,
 			&s3.GetObjectInput{
 				Bucket: aws.String(s3_record.Bucket.Name),
 				Key:    aws.String(s3_record.Object.Key),
 			})
 		if err != nil {
-			fmt.Println(err)
+			fmt.Println("Tulee erroria: %s", err)
 		}
 		fmt.Printf("File: %s", numBytes)
 	}
