@@ -17,7 +17,7 @@ def handler(event: dict, context: dict) -> Response:
     logger.info(json.dumps(event))
     body: dict = _get_body_from_event(event)
     logger.info(json.dumps(body))
-    body, item = _query_dynamo_by_id(body)
+    body = _query_dynamo_by_id(body)
     response = _create_response(body)
     return response
 
@@ -42,20 +42,20 @@ def _query_dynamo_by_id(body: dict) -> dict:
     logging.info(item_retrieved_from_db)
     if item_retrieved_from_db:
         body["verified"] = True
-        # wait(int(item_retrieved_from_db["latency"]))
+        wait(int(item_retrieved_from_db["latency"]))
     else:
         body["verified"] = False
-    return body, item_retrieved_from_db
+    return body
 
 
 def _create_response(body: dict) -> response:
-    if body["approved"]:
+    if body["verified"]:
         return {
             "status": 200,
             "content": json.dumps(body)
         }
     else:
         return {
-            "status": 240,
+            "status": 404,
             "content": json.dumps(body)
         }
