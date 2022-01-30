@@ -11,11 +11,6 @@ provider:
   iamRoleStatements:
   - Effect: Allow
     Action:
-      - dynamodb:GetItem
-      - dynamodb:PutItem
-    Resource: arn:aws:dynamodb:*:*:table/${self:custom.latencyTable}
-  - Effect: Allow
-    Action:
       - lambda:InvokeFunction
     Resource: arn:aws:lambda:*:*:function:*
   - Effect: Allow
@@ -23,6 +18,26 @@ provider:
       - sqs:DeleteMessage
       - sqs:ReceiveMessage
     Resource: arn:aws:sqs:*:*:${self:custom.timeoutTransactions}
+    - Effect: Allow
+      Action:
+        - s3:GetItem
+        - s3:PutItem
+        - s3:GetObject
+        - s3:PutObject
+        - s3:ListObject
+        - s3:Get*
+        - s3:Put*
+      Resource: arn:aws:s3:::${self:custom.verificationItemsBucket}
+    - Effect: Allow
+      Action:
+        - s3:GetItem
+        - s3:PutItem
+        - s3:GetObject
+        - s3:PutObject
+        - s3:ListObject
+        - s3:Get*
+        - s3:Put*
+      Resource: arn:aws:s3:::${self:custom.verificationItemsBucket}/*
 
 package:
   patterns:
@@ -32,19 +47,27 @@ package:
 custom:
   region: ${self:provider.region}
   prefix: ${self:provider.stage}-${self:service}
-  latencyTable: ${self:custom.prefix}-transaction-latencies-table
   timeoutTransactions: ${self:custom.prefix}-timeout-transactions
+  verificationItemsBucket: ${self:custom.prefix}-timeout-transactions-verification-items
 
 functions:
-  transaction-api:
+  # transaction-api:
+  #   handler: bin/verification-api
+  #   description: Verify transactions from API and DynamoDb object query.
+  #   events:
+  #     - httpApi:
+  #         path: /verifyTransaction
+  #         method: get
+  #   environment:
+  #     latencyTable: ${self:custom.latencyTable}
+  verification-api:
     handler: bin/verification-api
-    description: Verify transactions from API and DynamoDb object query.
+    description: Get verification api events from CSV
     events:
-      - httpApi:
-          path: /verifyTransaction
-          method: get
+      - s3: ${self:custom.verificationItemsBucket}
     environment:
-      latencyTable: ${self:custom.latencyTable}
+      verificationItemsBucket: ${self:custom.verificationItemsBucket}
+      region: ${self:custom.region}
 
 resources:
   Resources:
