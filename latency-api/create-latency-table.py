@@ -1,9 +1,12 @@
 import json
 import logging
 
-logger = logging.getLogger('NULL')
-logger.addHandler(logging.NullHandler())
+# Initialize you log configuration using the base class
+logging.basicConfig(level=logging.INFO)
+
+# Retrieve the logger instance
+logger = logging.getLogger()
 
 
 def handler(event: dict, context):
-    logging.info(event)
+    logger.info(json.dumps(event))
