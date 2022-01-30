@@ -42,5 +42,6 @@ def handler(event, context):
 
 
 def _write_to_dynamo(latency_data: dict):
-    dynamodb = boto3.client('dynamodb')
-    dynamodb.put_item(TableName=os.environ["latencyTable"], Item=latency_data)
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table(os.environ["latencyTable"])
+    table.put_item(Item=latency_data)
