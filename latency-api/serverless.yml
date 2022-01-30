@@ -27,7 +27,7 @@ provider:
         - s3:ListObject
         - s3:Get*
         - s3:Put*
-      Resource: arn:aws:s3:::dev-latency-api-transaction-latencies-sources
+      Resource: arn:aws:s3:::${self:custom.latencyBucket}
     - Effect: Allow
       Action:
         - s3:GetItem
@@ -37,7 +37,7 @@ provider:
         - s3:ListObject
         - s3:Get*
         - s3:Put*
-      Resource: arn:aws:s3:::dev-latency-api-transaction-latencies-sources/*
+      Resource: arn:aws:s3:::${self:custom.latencyBucket}/*
 
 custom:
   region: ${self:provider.region}
