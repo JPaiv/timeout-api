@@ -22,11 +22,15 @@ provider:
       Action:
         - s3:GetItem
         - s3:PutItem
+        - s3:GetObject
+        - s3:PutObject
       Resource: arn:aws:s3:::bucket/${self:custom.latencyBucket}
     - Effect: Allow
       Action:
         - s3:GetItem
         - s3:PutItem
+        - s3:GetObject
+        - s3:PutObject
       Resource: arn:aws:s3:::bucket/${self:custom.latencyBucket}/*
 
 custom:
