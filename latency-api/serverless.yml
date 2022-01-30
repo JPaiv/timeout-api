@@ -28,10 +28,10 @@ provider:
   #     - dynamodb:GetItem
   #     - dynamodb:PutItem
   #   Resource: arn:aws:dynamodb:*:*:table/${self:custom.latencyTable}
-    - Effect: Allow
-      Action:
-        - lambda:InvokeFunction
-      Resource: arn:aws:lambda:*:*:function:*
+    # - Effect: Allow
+    #   Action:
+    #     - lambda:InvokeFunction
+      # Resource: arn:aws:lambda:*:*:function:*
     - Effect: Allow
       Action:
         - S3: GetItem
@@ -53,7 +53,7 @@ custom:
 
 functions:
   create-latency-table:
-    description: FIll dynamo table wityh latency information.
+    description: Fill dynamo table with latency information.
     handler: create-latency-table.handler
     events:
      - s3: ${self:custom.latencyBucket}
