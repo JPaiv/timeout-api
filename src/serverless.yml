@@ -32,7 +32,6 @@ package:
 custom:
   region: ${self:provider.region}
   prefix: ${self:provider.stage}-${self:service}
-  timeoutTransactions: ${self:custom.prefix}-timeout-transactions
   latencyTable: ${self:custom.prefix}-transaction-latencies-table
 
 functions:
