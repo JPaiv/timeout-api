@@ -1,11 +1,13 @@
+from multiprocessing.connection import wait
 import os
 from urllib import response
 import boto3
 import json
 import logging
 import os
+from boto3.dynamodb.conditions import Key
+from decimal import Decimal
 from requests.models import Response
-from boto3.dynamodb.conditions import Key, Attr
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
@@ -33,14 +35,17 @@ def _query_dynamo_by_id(body: dict) -> dict:
     response = table.query(
         KeyConditionExpression=Key('id').eq(body["bank_country_code"])
     )
-    item = response["Items"][0]
-    logging.info(item)
-    # if item:
-    #     body["verified"] = True
-
-    # else:
-    #     body["verified"] = False
-    return body, item
+    logger.info(response)
+    item_retrieved_from_db = response["Items"][0]
+    item_retrieved_from_db = dict(map(lambda x: (x[0], int(x[1])) if isinstance(
+        x[1], Decimal) else x, item_retrieved_from_db.items()))
+    logging.info(item_retrieved_from_db)
+    if item_retrieved_from_db:
+        body["verified"] = True
+        # wait(int(item_retrieved_from_db["latency"]))
+    else:
+        body["verified"] = False
+    return body, item_retrieved_from_db
 
 
 def _create_response(body: dict) -> response:
