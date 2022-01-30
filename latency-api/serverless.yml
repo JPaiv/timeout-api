@@ -22,10 +22,10 @@ provider:
     Action:
       - S3: GetItem
     Resource: arn:aws:s3:::bucket/${custom.timeoutBucket}
-  - Effect: Allow
-    Action:
-      - S3: GetItem
-    Resource: arn:aws:s3:::bucket/${custom.timeoutBucket}/*
+  # - Effect: Allow
+  #   Action:
+  #     - S3: GetItem
+  #   Resource: arn:aws:s3:::bucket/${custom.timeoutBucket}/*
 
 custom:
   region: ${self:provider.region}
