@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main ]
 
-# jobs:
+jobs:
 #   Serverless-transactions-api-deploy:
 #     runs-on: ubuntu-latest
 #     defaults:
