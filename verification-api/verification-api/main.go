@@ -25,7 +25,7 @@ func handler(ctx context.Context, s3Event events.S3Event) {
 	for _, record := range s3Event.Records {
 		s3_record := record.S3
 		fmt.Printf("[%s - %s] Bucket = %s, Key = %s \n", record.EventSource, record.EventTime, s3_record.Bucket.Name, s3_record.Object.Key)
-		file, err := os.Create(s3.Object.Key)
+		file, err := os.Create(s3_record.Object.Key)
 		if err != nil {
 			fmt.Println(err)
 		}
