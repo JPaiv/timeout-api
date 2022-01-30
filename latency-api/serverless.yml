@@ -54,6 +54,15 @@ functions:
     environment:
       latencyTable: ${self:custom.latencyTable}
 
+  latency-api:
+    description: Check if transaction is valid
+    handler: latency-api.handler
+    events:
+      - httpApi:
+          path: /verifyTransaction
+          method: get
+    environment:
+      latencyTable: ${self:custom.latencyTable}
 resources:
  Resources:
     Verification:
