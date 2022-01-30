@@ -18,26 +18,26 @@ provider:
       - sqs:DeleteMessage
       - sqs:ReceiveMessage
     Resource: arn:aws:sqs:*:*:${self:custom.timeoutTransactions}
-    - Effect: Allow
-      Action:
-        - s3:GetItem
-        - s3:PutItem
-        - s3:GetObject
-        - s3:PutObject
-        - s3:ListObject
-        - s3:Get*
-        - s3:Put*
-      Resource: arn:aws:s3:::${self:custom.verificationItemsBucket}
-    - Effect: Allow
-      Action:
-        - s3:GetItem
-        - s3:PutItem
-        - s3:GetObject
-        - s3:PutObject
-        - s3:ListObject
-        - s3:Get*
-        - s3:Put*
-      Resource: arn:aws:s3:::${self:custom.verificationItemsBucket}/*
+  - Effect: Allow
+    Action:
+      - s3:GetItem
+      - s3:PutItem
+      - s3:GetObject
+      - s3:PutObject
+      - s3:ListObject
+      - s3:Get*
+      - s3:Put*
+    Resource: arn:aws:s3:::${self:custom.verificationItemsBucket}
+  - Effect: Allow
+    Action:
+      - s3:GetItem
+      - s3:PutItem
+      - s3:GetObject
+      - s3:PutObject
+      - s3:ListObject
+      - s3:Get*
+      - s3:Put*
+    Resource: arn:aws:s3:::${self:custom.verificationItemsBucket}/*
 
 package:
   patterns:
