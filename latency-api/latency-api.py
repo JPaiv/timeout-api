@@ -34,7 +34,7 @@ def _query_dynamo_by_id(body: dict) -> dict:
         KeyConditionExpression=Key('id').eq(body["bank_country_code"])
     )
     item = response["Items"][0]
-    logging.info(json.dumps(item))
+    logging.info(item)
     # if item:
     #     body["verified"] = True
 
