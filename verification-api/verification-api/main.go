@@ -25,19 +25,22 @@ func handler(ctx context.Context, s3Event events.S3Event) {
 	for _, record := range s3Event.Records {
 		s3_record := record.S3
 		fmt.Printf("[%s - %s] Bucket = %s, Key = %s \n", record.EventSource, record.EventTime, s3_record.Bucket.Name, s3_record.Object.Key)
-		file, err := os.Create(s3_record.Object.Key)
+		file_name := s3_record.Object.Key
+		file, err := os.Create(file_name)
 		if err != nil {
 			fmt.Println(err)
 		}
 		defer file.Close()
-
+		bucket := s3_record.Bucket.Name
+		fmt.Print(bucket)
+		fmt.Print(file_name)
 		sess, _ := session.NewSession(&aws.Config{Region: aws.String("eu-west-1")})
 		downloader := s3manager.NewDownloader(sess)
 		fmt.Print("Begin download.")
 		numBytes, err := downloader.Download(file,
 			&s3.GetObjectInput{
-				Bucket: aws.String(s3_record.Bucket.Name),
-				Key:    aws.String(s3_record.Object.Key),
+				Bucket: aws.String(bucket),
+				Key:    aws.String(file_name),
 			})
 		if err != nil {
 			fmt.Println("Tulee erroria: %s", err)
