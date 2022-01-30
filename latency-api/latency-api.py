@@ -5,6 +5,7 @@ import json
 import logging
 import os
 from requests.models import Response
+from boto3.dynamodb.conditions import Key, Attr
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
