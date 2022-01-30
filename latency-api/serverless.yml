@@ -18,14 +18,14 @@ provider:
     Action:
       - lambda:InvokeFunction
     Resource: arn:aws:lambda:*:*:function:*
-  # - Effect: Allow
-  #   Action:
-  #     - S3: GetItem
-  #   Resource: arn:aws:s3:::bucket/${self:custom.timeoutBucket}
-  # - Effect: Allow
-  #   Action:
-  #     - S3: GetItem
-  #   Resource: arn:aws:s3:::bucket/${self:custom.timeoutBucket}/*
+  - Effect: Allow
+    Action:
+      - S3: GetItem
+    Resource: arn:aws:s3:::bucket/${self:custom.timeoutBucket}
+  - Effect: Allow
+    Action:
+      - S3: GetItem
+    Resource: arn:aws:s3:::bucket/${self:custom.timeoutBucket}/*
 
 custom:
   region: ${self:provider.region}
