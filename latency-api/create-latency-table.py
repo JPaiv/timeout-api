@@ -16,18 +16,16 @@ def handler(event, context):
     bucket_name = event['Records'][0]['s3']['bucket']['name']
     file_key = event['Records'][0]['s3']['object']['key']
     logger.info('Reading {} from {}'.format(file_key, bucket_name))
-    # s3_object = s3.get_object(Bucket=bucket_name, Key=file_key)
-    s3_object = s3.Bucket(bucket_name).download_file(
-        file_key, 'latencies.json')
-    logging.info(s3_object)
-    source_file = open(s3_object)
-    source_file = json.loads(source_file)
-    counter = 0
-    for key, value in source_file.items():
-        latency_data = {}
-        latency_data["id"] = key
-        latency_data["latency"] = value
-        _write_to_dynamo(latency_data)
+    # s3.get_object(Bucket=bucket_name, Key=file_key)
+    s3.Bucket(bucket_name).download_file(
+        file_key, "latencies.json")
+    with open("latencies.json") as source_file:
+        source_file = json.loads(source_file)
+        for key, value in source_file.items():
+            latency_data = {}
+            latency_data["id"] = key
+            latency_data["latency"] = value
+            _write_to_dynamo(latency_data)
 
 
 # def _create_dynamo_latency_object(source_data: dict) -> dict:
