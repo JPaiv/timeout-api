@@ -1,8 +1,8 @@
-service: latency-api
+service: timeout-api
 
 provider:
   name: aws
-  runtime: python3.8
+  runtime: go1.x
   lambdaHashingVersion: 20201221
 
   stage: dev
@@ -18,40 +18,65 @@ provider:
     Action:
       - lambda:InvokeFunction
     Resource: arn:aws:lambda:*:*:function:*
-  # - Effect: Allow
-  #   Action:
-  #     - S3: GetItem
-  #   Resource: arn:aws:s3:::bucket/${custom.timeoutBucket}
-  # - Effect: Allow
-  #   Action:
-  #     - S3: GetItem
-  #   Resource: arn:aws:s3:::bucket/${custom.timeoutBucket}/*
+  - Effect: Allow
+    Action:
+      - sqs:DeleteMessage
+      - sqs:ReceiveMessage
+    Resource: arn:aws:sqs:*:*:${self:custom.timeoutTransactions}
+
+package:
+  patterns:
+    - '!./**'
+    - ./bin/**
 
 custom:
   region: ${self:provider.region}
   prefix: ${self:provider.stage}-${self:service}
   latencyTable: ${self:custom.prefix}-transaction-latencies-table
+  timeoutTransactions: ${self:custom.prefix}-timeout-transactions
 
 functions:
-  create-latency-table:
-    handler: create-latency-table.handler
+  transaction-api:
+    handler: bin/transaction-api
+    description: Verify transactions from API and DynamoDb object query.
     events:
-     - s3: ${self:custom.prefix}-transaction-latencies-sources
+      - httpApi:
+          path: /verifyTransaction
+          method: get
     environment:
-      latencyTable: ${custom.latencyTable}
+      latencyTable: ${self:custom.latencyTable}
 
 resources:
- Resources:
-    Verification:
-      Type: AWS::DynamoDB::Table
+  Resources:
+    Transactions:
+      Type: AWS::SQS::Queue
       Properties:
-        TableName: ${self:custom.latencyTable}
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 5
-          WriteCapacityUnits: 5
+        QueueName: ${self:custom.timeoutTransactions}
+        MessageRetentionPeriod: 1209600
+        VisibilityTimeout: 60
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+            - MessagesDeadLetterQueue
+            - Arn
+          maxReceiveCount: 10
+
+    MessagesDeadLetterQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.timeoutTransactions}-dead-letter-queue
+        MessageRetentionPeriod: 1209600
+
+    # Verification:
+    #   Type: AWS::DynamoDB::Table
+    #   Properties:
+    #     TableName: ${self:custom.latencyTable}
+    #     AttributeDefinitions:
+    #       - AttributeName: id
+    #         AttributeType: S
+    #     KeySchema:
+    #       - AttributeName: id
+    #         KeyType: HASH
+    #     ProvisionedThroughput:
+    #       ReadCapacityUnits: 5
+    #       WriteCapacityUnits: 5
