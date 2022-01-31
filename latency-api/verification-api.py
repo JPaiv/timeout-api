@@ -83,5 +83,7 @@ def _verify_transaction(transaction: dict) -> dict:
     response = requests.get(
         url="https://8xq34nc1h9.execute-api.eu-west-1.amazonaws.com/verifyTransaction", params=transaction)
     logger.info(type(response.json()))
-    logger.info(response)
+    logger.info(response.json())
+    response = response.content
+    response = json.loads(response)
     return response
