@@ -96,7 +96,7 @@ def _verify_transaction(transaction: dict) -> dict:
 
 def _send_unused_entries_to_sqs(transactions):
     sqs_resource = boto3.resource('sqs')
-    queue_name = os.environ("timeoutTransactionsQueue")
+    queue_name = os.environ["timeoutTransactionsQueue"]
     queue = sqs_resource.get_queue_by_name(
         QueueName=queue_name)
     response = queue.send_messages(Entries=transactions)
