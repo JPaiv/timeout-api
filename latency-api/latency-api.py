@@ -24,10 +24,10 @@ def handler(event: dict, context: dict) -> Response:
 
 
 def _get_body_from_event(event: dict):
-    body: dict = event["body"]
-    body: dict = json.loads(body)
-    logging.info(body)
-    return body
+    queryStringParameters: dict = event["queryStringParameters"]
+    # queryStringParameters: dict = json.loads(queryStringParameters)
+    logging.info(queryStringParameters)
+    return queryStringParameters
 
 
 def _query_dynamo_by_id(body: dict) -> dict:
