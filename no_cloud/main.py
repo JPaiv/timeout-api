@@ -90,4 +90,4 @@ def _sum_priority_transaction_values(priority_transactions) -> int:
 
 
 if __name__ == "__main__":
-    main(1000)
+    main(50)
