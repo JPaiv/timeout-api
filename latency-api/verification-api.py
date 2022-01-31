@@ -24,10 +24,15 @@ def handler(event, context):
 
     sorted_transactions = _sort_by_amount(transactions)
     succesful_verifications = []
+    counter = 0
     for transaction in sorted_transactions:
         verified_transaction = _verify_transaction(transaction)
         if verified_transaction["verified"]:
             succesful_verifications.append(verified_transaction)
+        counter += 1
+        if counter == 3:
+            break
+    logging.info(succesful_verifications)
 
 
 def _get_bucket_and_file_names(event: dict) -> Union(str, str):
@@ -71,6 +76,6 @@ def _verify_transaction(transaction: dict, timeout: int) -> dict:
         Verify transaction validity from an api with latency to stimulate actual production.
     """
     response = requests.request(
-        "GET", "https://a6z1z5aa46.execute-api.eu-west-1.amazonaws.com/verifyTransaction", data=json.dumps(transaction), timeout=timeout)
+        "GET", "https://a6z1z5aa46.execute-api.eu-west-1.amazonaws.com/verifyTransaction", data=json.dumps(transaction))
     logger.info(type(response.json()))
     return json.loads(transaction)
