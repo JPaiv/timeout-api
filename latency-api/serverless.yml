@@ -86,6 +86,14 @@ functions:
     environment:
       latencyTable: ${self:custom.verificationBucket}
 
+  hello-world:
+    description: Demonstrate functionality
+    handler: hello-world.handler
+    events:
+      - httpApi:
+          path: /morjensta
+          method: get
+
 resources:
  Resources:
     Verification:
