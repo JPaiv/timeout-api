@@ -69,6 +69,7 @@ functions:
   latency-api:
     description: Check if transaction is valid
     handler: latency-api.handler
+    timeout: 120
     events:
       - httpApi:
           path: /verifyTransaction
@@ -79,6 +80,7 @@ functions:
   verification-api:
     description: Check if transaction is valid
     handler: verification-api.handler
+    timeout: 120
     events:
      - s3: ${self:custom.verificationBucket}
     environment:
