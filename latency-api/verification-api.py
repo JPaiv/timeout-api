@@ -18,10 +18,11 @@ def handler(event, context):
 
     s3_client.download_file(bucket_name, file_key, file_key)
     transactions = _read_source_csv_for_financial_transactions(file_key)
-    logger.info(json.dumps(transactions))
+    sorted_transactions = _sort_by_amount(transactions)
+    logger.info(json.dumps(sorted_transactions))
 
 
-def _read_source_csv_for_financial_transactions(file_key) -> dict:
+def _read_source_csv_for_financial_transactions(file_key) -> list:
     """
         Get financial transactions from a source file.
     """
@@ -29,3 +30,17 @@ def _read_source_csv_for_financial_transactions(file_key) -> dict:
                        delimiter=',')
     transactions = [x for x in a]
     return transactions
+
+
+def _sort_by_amount(transactions: list) -> list:
+    """
+        Sort transactions by amount of dollars.
+    """
+    sorted_transactions = sorted(transactions,
+                                 key=lambda transaction: transaction["amount"],
+                                 reverse=True)
+    return sorted_transactions
+
+
+def _verify_transaction(transactiond: dict) -> dict:
+    pass

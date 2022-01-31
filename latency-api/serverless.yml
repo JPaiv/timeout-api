@@ -47,7 +47,7 @@ provider:
       Action:
         - sqs:DeleteMessage
         - sqs:ReceiveMessage
-      Resource: arn:aws:sqs:*:*:${self:custom.timeoutTransactions}
+      Resource: arn:aws:sqs:*:*:${self:custom.timeoutTransactionsQueue}
 
 custom:
   region: ${self:provider.region}
@@ -55,7 +55,7 @@ custom:
   latencyTable: ${self:custom.prefix}-transaction-latencies-table
   latencyBucket:  ${self:custom.prefix}-transaction-latencies-sources
   verificationBucket:  ${self:custom.prefix}-transaction-verification-sources
-  timeoutTransactions: ${self:custom.prefix}-timeout-transactions
+  timeoutTransactionsQueue: ${self:custom.prefix}-timeout-transactions-queue
 
 functions:
   create-latency-table:
@@ -78,9 +78,9 @@ functions:
 
   verification-api:
     description: Check if transaction is valid
-    handler: latency-api.handler
+    handler: verification-api.handler
     events:
-     - s3: ${self:custom.latencyBucket}
+     - s3: ${self:custom.verificationBucket}
     environment:
       latencyTable: ${self:custom.verificationBucket}
 
@@ -103,7 +103,7 @@ resources:
     Transactions:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: ${self:custom.timeoutTransactions}
+        QueueName: ${self:custom.timeoutTransactionsQueue}
         MessageRetentionPeriod: 1209600
         VisibilityTimeout: 60
         RedrivePolicy:
@@ -116,5 +116,5 @@ resources:
     MessagesDeadLetterQueue:
       Type: AWS::SQS::Queue
       Properties:
-        QueueName: ${self:custom.timeoutTransactions}-dead-letter-queue
+        QueueName: ${self:custom.timeoutTransactionsQueue}-dead-letter-queue
         MessageRetentionPeriod: 1209600
