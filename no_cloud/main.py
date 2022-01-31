@@ -4,8 +4,8 @@ import csv
 import json
 import logging
 
-logger = logging.getLogger('NULL')
-logger.addHandler(logging.NullHandler())
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 
 def main(max_latency):
@@ -18,13 +18,15 @@ def main(max_latency):
     transactions = _sort_by_amount(transactions)
     priority_transactions = _priority_transactions(transactions, max_latency)
     pprint(priority_transactions)
+    amounts_sum = _sum_priority_transaction_values(priority_transactions)
+    pprint(amounts_sum)
 
 
 def _read_source_json_api_latency_data() -> dict:
     """
         Read json source data from root folder to get api altencies.
     """
-    with open("/home/juho/timeout_api/api_latencies.json") as f_in:
+    with open("/home/juho/timeout_api/no_cloud/api_latencies.json") as f_in:
         return json.load(f_in)
 
 
@@ -32,7 +34,7 @@ def _read_source_csv_for_financial_transactions() -> dict:
     """
         Get financial transactions from a source file.
     """
-    a = csv.DictReader(open("/home/juho/timeout_api/transactions.csv"),
+    a = csv.DictReader(open("/home/juho/timeout_api/no_cloud/transactions.csv"),
                        delimiter=',')
     transactions = [x for x in a]
     return transactions
@@ -77,6 +79,14 @@ def _priority_transactions(transactions: list, max_latency: int) -> list:
 
     priority_transactions = [transactions[i] for i in suitable_indexes]
     return priority_transactions
+
+
+def _sum_priority_transaction_values(priority_transactions) -> int:
+    amounts = []
+    for transaction in priority_transactions:
+        amounts.append(float(transaction["amount"]))
+
+    return sum(amounts)
 
 
 if __name__ == "__main__":

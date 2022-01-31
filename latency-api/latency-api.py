@@ -1,5 +1,3 @@
-from multiprocessing.connection import wait
-import os
 from urllib import response
 import boto3
 import json
@@ -24,7 +22,7 @@ def handler(event: dict, context: dict) -> Response:
 
 
 def _get_body_from_event(event: dict):
-    queryStringParameters: dict = event["queryStringParameters"]
+    queryStringParameters = event["queryStringParameters"]
     logging.info(queryStringParameters)
     return queryStringParameters
 
@@ -44,13 +42,16 @@ def _query_dynamo_by_id(body: dict) -> dict:
     logging.info(item_retrieved_from_db)
     if item_retrieved_from_db:
         body["verified"] = "true"
-        # time.sleep(item_retrieved_from_db["latency"])
+        time.sleep(item_retrieved_from_db["latency"])
     else:
         body["verified"] = "false"
     return body
 
 
 def _get_result_from_dynamo_query(response: dict) -> dict:
+    """
+        Dynamo returns list of db items in the table. Query returns only 1 items to take the first item from the list.
+    """
     item_retrieved_from_db = response["Items"]
     item_retrieved_from_db = item_retrieved_from_db[0]
     return item_retrieved_from_db

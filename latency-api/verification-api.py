@@ -5,6 +5,7 @@ import logging
 import requests
 import datetime
 import os
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -16,9 +17,9 @@ def handler(event, context):
     logger.info(json.dumps(event))
     s3_client = boto3.client('s3')
     bucket_name, file_key = _get_bucket_and_file_names(event)
-    logger.info(f'Reading {file_key} from {bucket_name}')
 
     local_file_name = _create_local_file_location_and_name(file_key)
+    logger.info(f'Reading {file_key} from {bucket_name}')
     s3_client.download_file(bucket_name, file_key, local_file_name)
     transactions = _read_source_csv_for_financial_transactions(local_file_name)
 
@@ -27,10 +28,13 @@ def handler(event, context):
     start_time = datetime.datetime.now()
     for index, transaction in enumerate(sorted_transactions):
         verified_transaction = _verify_transaction(transaction)
+
         logger.info("Verified transaction:")
         logger.info(verified_transaction)
+
         content = verified_transaction["content"]
         content = json.loads(content)
+
         if content["verified"] == "true":
             succesful_verifications.append(content)
             del sorted_transactions[index]
@@ -41,7 +45,7 @@ def handler(event, context):
             sorted_transactions = sorted_transactions[:5]
             break
 
-    _send_unused_entries_to_sqs(sorted_transactions)
+    _send_unused_transactions_to_sqs(sorted_transactions)
 
     logging.info(succesful_verifications)
 
@@ -59,6 +63,7 @@ def _create_local_file_location_and_name(file_key: str) -> str:
     """
         Lambda only accepts tmp file location for a file download.
     """
+    logger.info(f"Create new location temp file location: '/tmp/'{file_key}")
     return '/tmp/' + file_key
 
 
@@ -69,6 +74,7 @@ def _read_source_csv_for_financial_transactions(file_key) -> list:
     a = csv.DictReader(open(file_key),
                        delimiter=',')
     transactions = [x for x in a]
+    logger.info(f"New transactions: {len(transactions)}")
     return transactions
 
 
@@ -88,13 +94,16 @@ def _verify_transaction(transaction: dict) -> dict:
     """
     response = requests.get(
         url="https://8xq34nc1h9.execute-api.eu-west-1.amazonaws.com/verifyTransaction", params=transaction)
-    logger.info(response.json())
     response = response.content
     response = json.loads(response)
+    logger.info(response)
     return response
 
 
-def _send_unused_entries_to_sqs(transactions):
+def _send_unused_transactions_to_sqs(transactions):
+    """
+        Send unsused transactions to sqs queue to wait for delivery.
+    """
     sqs_resource = boto3.resource('sqs')
     queue_name = os.environ["timeoutTransactionsQueue"]
     queue = sqs_resource.get_queue_by_name(QueueName=queue_name)
