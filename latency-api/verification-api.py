@@ -29,8 +29,8 @@ def handler(event, context):
         logger.info("Verified transaction:")
         logger.info(verified_transaction)
         content = verified_transaction["content"]
-        if verified_transaction["verified"] == "true":
-            succesful_verifications.append(verified_transaction)
+        if content["verified"] == "true":
+            succesful_verifications.append(content)
             del sorted_transactions[index]
 
         time_check = datetime.datetime.now()
@@ -87,4 +87,6 @@ def _verify_transaction(transaction: dict) -> dict:
     logger.info(response.json())
     response = response.content
     response = json.loads(response)
+    logger.info("Response type")
+    logger.info(type(response))
     return response
