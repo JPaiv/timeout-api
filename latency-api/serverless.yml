@@ -43,6 +43,11 @@ provider:
       Resource: 
         - arn:aws:s3:::${self:custom.latencyBucket}/*
         - arn:aws:s3:::${self:custom.verificationBucket}/*
+    - Effect: Allow
+      Action:
+        - sqs:DeleteMessage
+        - sqs:ReceiveMessage
+      Resource: arn:aws:sqs:*:*:${self:custom.timeoutTransactions}
 
 custom:
   region: ${self:provider.region}
@@ -50,6 +55,7 @@ custom:
   latencyTable: ${self:custom.prefix}-transaction-latencies-table
   latencyBucket:  ${self:custom.prefix}-transaction-latencies-sources
   verificationBucket:  ${self:custom.prefix}-transaction-verification-sources
+  timeoutTransactions: ${self:custom.prefix}-timeout-transactions
 
 functions:
   create-latency-table:
@@ -93,3 +99,22 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
+
+    Transactions:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.timeoutTransactions}
+        MessageRetentionPeriod: 1209600
+        VisibilityTimeout: 60
+        RedrivePolicy:
+          deadLetterTargetArn:
+            Fn::GetAtt:
+            - MessagesDeadLetterQueue
+            - Arn
+          maxReceiveCount: 10
+
+    MessagesDeadLetterQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:custom.timeoutTransactions}-dead-letter-queue
+        MessageRetentionPeriod: 1209600
