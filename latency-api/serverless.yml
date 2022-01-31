@@ -28,7 +28,9 @@ provider:
         - s3:ListObject
         - s3:Get*
         - s3:Put*
-      Resource: arn:aws:s3:::${self:custom.latencyBucket}
+      Resource: 
+        - arn:aws:s3:::${self:custom.latencyBucket}
+        - arn:aws:s3:::${self:custom.verificationBucket}
     - Effect: Allow
       Action:
         - s3:GetItem
@@ -38,13 +40,16 @@ provider:
         - s3:ListObject
         - s3:Get*
         - s3:Put*
-      Resource: arn:aws:s3:::${self:custom.latencyBucket}/*
+      Resource: 
+        - arn:aws:s3:::${self:custom.latencyBucket}/*
+        - arn:aws:s3:::${self:custom.verificationBucket}/*
 
 custom:
   region: ${self:provider.region}
   prefix: ${self:provider.stage}-${self:service}
   latencyTable: ${self:custom.prefix}-transaction-latencies-table
   latencyBucket:  ${self:custom.prefix}-transaction-latencies-sources
+  verificationBucket:  ${self:custom.prefix}-transaction-verification-sources
 
 functions:
   create-latency-table:
@@ -64,6 +69,14 @@ functions:
           method: get
     environment:
       latencyTable: ${self:custom.latencyTable}
+
+  verification-api:
+    description: Check if transaction is valid
+    handler: latency-api.handler
+    events:
+     - s3: ${self:custom.latencyBucket}
+    environment:
+      latencyTable: ${self:custom.verificationBucket}
 
 resources:
  Resources:
