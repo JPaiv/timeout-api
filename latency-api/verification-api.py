@@ -4,7 +4,6 @@ import json
 import logging
 import requests
 import time
-from typing import Union
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -16,7 +15,7 @@ def handler(event, context):
     logger.info(json.dumps(event))
     s3_client = boto3.client('s3')
     bucket_name, file_key = _get_bucket_and_file_names(event)
-    logger.info('Reading {} from {}'.format(file_key, bucket_name))
+    logger.info(f'Reading {file_key} from {bucket_name}')
 
     local_file_name = _create_local_file_location_and_name(file_key)
     s3_client.download_file(bucket_name, file_key, local_file_name)
@@ -35,7 +34,7 @@ def handler(event, context):
     logging.info(succesful_verifications)
 
 
-def _get_bucket_and_file_names(event: dict) -> Union(str, str):
+def _get_bucket_and_file_names(event: dict):
     """
         Get bucket and file name from s3 trigger event to download transaction source data file.
     """
