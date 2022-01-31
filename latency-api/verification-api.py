@@ -3,7 +3,7 @@ import boto3
 import json
 import logging
 import requests
-import time
+import datetime
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -23,14 +23,18 @@ def handler(event, context):
 
     sorted_transactions = _sort_by_amount(transactions)
     succesful_verifications = []
-    counter = 0
-    for transaction in sorted_transactions:
+    start_time = datetime.datetime.now()
+    for index, transaction in enumerate(sorted_transactions):
         verified_transaction = _verify_transaction(transaction)
         if verified_transaction["verified"]:
             succesful_verifications.append(verified_transaction)
-        counter += 1
-        if counter == 3:
+            del sorted_transactions[index]
+
+        time_check = datetime.datetime.now()
+        time_difference = start_time - time_check
+        if time_difference.microseconds >= 1000:
             break
+
     logging.info(succesful_verifications)
 
 
