@@ -74,7 +74,7 @@ def _sort_by_amount(transactions: list) -> list:
     return sorted_transactions
 
 
-def _verify_transaction(transaction: dict, timeout: int) -> dict:
+def _verify_transaction(transaction: dict) -> dict:
     """
         Verify transaction validity from an api with latency to stimulate actual production.
     """
