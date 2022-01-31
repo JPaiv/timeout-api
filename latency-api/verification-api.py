@@ -28,7 +28,8 @@ def handler(event, context):
         verified_transaction = _verify_transaction(transaction)
         logger.info("Verified transaction:")
         logger.info(verified_transaction)
-        if verified_transaction["content"]["verified"]:
+        content = verified_transaction["content"]
+        if verified_transaction["verified"] == "true":
             succesful_verifications.append(verified_transaction)
             del sorted_transactions[index]
 

@@ -44,10 +44,10 @@ def _query_dynamo_by_id(body: dict) -> dict:
     item_retrieved_from_db = _convert_decimal_to_int(item_retrieved_from_db)
     logging.info(item_retrieved_from_db)
     if item_retrieved_from_db:
-        body["verified"] = True
+        body["verified"] = "true"
         # time.sleep(item_retrieved_from_db["latency"])
     else:
-        body["verified"] = False
+        body["verified"] = "false"
     return body
 
 
