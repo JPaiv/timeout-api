@@ -41,7 +41,7 @@ def handler(event, context):
             sorted_transactions = sorted_transactions[:5]
             break
 
-    _send_unused_entries_to_sqs(transactions)(sorted_transactions)
+    _send_unused_entries_to_sqs(sorted_transactions)
 
     logging.info(succesful_verifications)
 
