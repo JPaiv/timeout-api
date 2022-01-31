@@ -83,4 +83,4 @@ def _verify_transaction(transaction: dict) -> dict:
     response = requests.request(
         "GET", "https://8xq34nc1h9.execute-api.eu-west-1.amazonaws.com/verifyTransaction", data=json.dumps(transaction))
     logger.info(type(response.json()))
-    return transaction
+    return response
