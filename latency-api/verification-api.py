@@ -26,6 +26,7 @@ def handler(event, context):
     start_time = datetime.datetime.now()
     for index, transaction in enumerate(sorted_transactions):
         verified_transaction = _verify_transaction(transaction)
+        logger.info(verified_transaction)
         if verified_transaction["verified"]:
             succesful_verifications.append(verified_transaction)
             del sorted_transactions[index]
