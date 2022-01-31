@@ -47,6 +47,9 @@ provider:
       Action:
         - sqs:DeleteMessage
         - sqs:ReceiveMessage
+        - sqs:SendMessage
+        - sqs:SendMessages
+        - sqs:GetQueueUrl
       Resource: arn:aws:sqs:*:*:${self:custom.timeoutTransactionsQueue}
 
 custom:
