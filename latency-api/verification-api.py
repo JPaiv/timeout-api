@@ -79,6 +79,6 @@ def _verify_transaction(transaction: dict) -> dict:
         Verify transaction validity from an api with latency to stimulate actual production.
     """
     response = requests.request(
-        "GET", "https://a6z1z5aa46.execute-api.eu-west-1.amazonaws.com/verifyTransaction", data=json.dumps(transaction))
+        "GET", "https://8xq34nc1h9.execute-api.eu-west-1.amazonaws.com/verifyTransaction", data=json.dumps(transaction))
     logger.info(type(response.json()))
     return json.loads(transaction)
