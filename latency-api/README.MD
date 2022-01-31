@@ -19,5 +19,7 @@ Purpose was to show how a timeout api would function in a simulation environment
 Purpose was to show my skills in software engineering, architecture design, DevOps engineering. 
 
 Cloud: AWS Api Gateway, Lambda, S3, DynamoDb
+
 CI/CD: Github Actions
+
 IaC: Serverless framework

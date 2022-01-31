@@ -19,6 +19,9 @@ This my solution to the programming task.
 ## Answers
 
 1000 milliseconds total value: 12233.9 USD
+
 90 milliseconds total value: 3050.68 USD
+
 60 milliseconds total value: 1096.57 USD
+
 50 milliseconds total value: 999.17
