@@ -97,8 +97,12 @@ def _verify_transaction(transaction: dict) -> dict:
 def _send_unused_entries_to_sqs(transactions):
     sqs_resource = boto3.resource('sqs')
     queue_name = os.environ["timeoutTransactionsQueue"]
-    logger.info(f"Queue name: {queue_name}")
-    queue = sqs_resource.get_queue_by_name(
-        QueueName=queue_name)
-    response = queue.send_messages(Entries=transactions)
+    queue = sqs_resource.get_queue_by_name(QueueName=queue_name)
+    entries = []
+    for transaction in transactions:
+        entry = {'Id': transaction["id"],
+                 'MessageBody': json.dumps(transaction),
+                 'MessageGroupId': 'FailedGroup'}
+        entries.append(entry)
+    response = queue.send_messages(Entries=entries)
     logger.info(response)
