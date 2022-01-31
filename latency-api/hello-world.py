@@ -3,8 +3,8 @@ from requests import Response
 
 
 def handler(event, context) -> Response:
-    body = {"message": "Tervetuloa uuteenaikaan!",
-            "content": "Parasta koodia!"}
+    body = {"message": "Welcome to the new age!",
+            "content": "Best possible code!"}
     return {
         "status": 200,
         "content": json.dumps(body)

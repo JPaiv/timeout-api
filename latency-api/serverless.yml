@@ -91,7 +91,7 @@ functions:
     handler: hello-world.handler
     events:
       - httpApi:
-          path: /morjensta
+          path: /hello
           method: get
 
 resources:
