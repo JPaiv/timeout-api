@@ -81,6 +81,6 @@ def _verify_transaction(transaction: dict) -> dict:
         Verify transaction validity from an api with latency to stimulate actual production.
     """
     response = requests.get(
-        "GET", "https://8xq34nc1h9.execute-api.eu-west-1.amazonaws.com/verifyTransaction", params=transaction)
+        url="https://8xq34nc1h9.execute-api.eu-west-1.amazonaws.com/verifyTransaction", params=transaction)
     logger.info(type(response.json()))
     return response
