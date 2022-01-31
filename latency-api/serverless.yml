@@ -84,7 +84,7 @@ functions:
     events:
      - s3: ${self:custom.verificationBucket}
     environment:
-      latencyTable: ${self:custom.verificationBucket}
+      timeoutTransactionsQueue: ${self:custom.timeoutTransactionsQueue}
 
   hello-world:
     description: Demonstrate functionality

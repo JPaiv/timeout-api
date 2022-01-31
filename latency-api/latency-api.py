@@ -25,7 +25,6 @@ def handler(event: dict, context: dict) -> Response:
 
 def _get_body_from_event(event: dict):
     queryStringParameters: dict = event["queryStringParameters"]
-    # queryStringParameters: dict = json.loads(queryStringParameters)
     logging.info(queryStringParameters)
     return queryStringParameters
 

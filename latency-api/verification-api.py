@@ -4,6 +4,7 @@ import json
 import logging
 import requests
 import datetime
+import os
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
@@ -31,14 +32,16 @@ def handler(event, context):
         content = verified_transaction["content"]
         content = json.loads(content)
         if content["verified"] == "true":
-            logger.info(content)
             succesful_verifications.append(content)
             del sorted_transactions[index]
 
         time_check = datetime.datetime.now()
         time_difference = start_time - time_check
         if time_difference.microseconds >= 1000:
+            sorted_transactions = sorted_transactions[:5]
             break
+
+    _send_unused_entries_to_sqs(transactions)(sorted_transactions)
 
     logging.info(succesful_verifications)
 
@@ -85,10 +88,15 @@ def _verify_transaction(transaction: dict) -> dict:
     """
     response = requests.get(
         url="https://8xq34nc1h9.execute-api.eu-west-1.amazonaws.com/verifyTransaction", params=transaction)
-    logger.info(type(response.json()))
     logger.info(response.json())
     response = response.content
     response = json.loads(response)
-    logger.info("Response type")
-    logger.info(type(response))
     return response
+
+
+def _send_unused_entries_to_sqs(transactions):
+    sqs_resource = boto3.resource('sqs')
+    queue = sqs_resource.get_queue_by_name(
+        QueueName=os.environ("timeoutTransactionsQueue"))
+    response = queue.send_messages(Entries=transactions)
+    logger.info(response)
