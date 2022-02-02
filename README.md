@@ -30,7 +30,3 @@ You can't, by definition serverless is used with event triggers. After deploymen
 ## CI/CD
 
 Github Actions automates build, depency management and deployment. I wanted to showcase my skills in how I handle writing code, application and infrastrucsture deployment.
-
-## But I don't want cloud!
-
-Well there is the traditional no-cloud folder with a more traditional approach. 
